@@ -29,7 +29,7 @@ func main() {
 	// Get samples data
 
 	// Prepare canvas composer. This is the one that composes the final look
-	composer := composers.Shuffler{}
+	composer := composers.Shuffle{}
 	if seed < 1 {
 		seed = time.Now().UTC().UnixNano()
 	}
