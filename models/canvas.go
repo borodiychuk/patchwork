@@ -13,6 +13,6 @@ func (c *Canvas) Render(r Renderer) {
 }
 
 // Compose composes canvas elements out of samples based on particular composition logic
-func (c *Canvas) Compose(cmp Composer, samples []*Sample) {
+func (c *Canvas) Compose(cmp Composer, samples []Sample) {
 	cmp.Compose(c, samples)
 }

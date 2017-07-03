@@ -7,7 +7,7 @@ type Shuffle struct {
 }
 
 // Compose composes a picture out of provided set of samples
-func (c *Shuffle) Compose(*models.Canvas, []*models.Sample) {
+func (c *Shuffle) Compose(*models.Canvas, []models.Sample) {
 	// Here goes the logic that fills canvas with patches
 }
 
