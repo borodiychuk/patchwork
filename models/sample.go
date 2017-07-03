@@ -4,5 +4,5 @@ import "image"
 
 // Sample defines an cloth sample that patchwork is made of
 type Sample interface {
-	Image() *image.Image // Image data
+	Image() image.Image // Image data
 }

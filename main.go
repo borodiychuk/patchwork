@@ -50,10 +50,15 @@ func main() {
 	composer.Seed(int64(seed))
 
 	// Prepare canvas rendered. This is the one that exports calvas into a readable format
-	renderer := r.PNG{}
+	renderer := r.PNG{
+		TargetFile: output,
+	}
 
 	// Generate canvas, copose pattern and render it
-	canvas := m.Canvas{}
+	canvas := m.Canvas{
+		Length: length,
+		Width:  width,
+	}
 	canvas.Compose(&composer, samples)
 	canvas.Render(&renderer)
 }
