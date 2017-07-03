@@ -4,7 +4,6 @@ import (
 	"image"
 	"image/png"
 	"log"
-	"math"
 	"os"
 
 	"github.com/borodiychuk/patchwork/models"
@@ -26,9 +25,7 @@ func (i *PNG) Render(canvas *models.Canvas) error {
 	// Iterate over elements
 	for i := 0; i < canvas.Length*canvas.Width; i++ {
 		e := canvas.Elements[i]
-		// This logic must belong to Canvas actually
-		row := int(math.Floor(float64(i) / float64(canvas.Width)))
-		col := i - row*canvas.Width
+		col, row := canvas.GetXY(i)
 
 		xOffset := col * patchSize
 		yOffset := row * patchSize

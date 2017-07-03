@@ -17,8 +17,18 @@ func (c *Shuffle) Compose(canvas *models.Canvas, samples []models.Sample) {
 	// Here goes the logic that fills canvas with patches
 	c.samplesCount = len(samples)
 	c.samples = samples
+	// Elements to avoid
+	topElement := ""
+	leftElement := ""
 	for i := 0; i < canvas.Length*canvas.Width; i++ {
-		canvas.Elements = append(canvas.Elements, c.makeElement())
+		col, row := canvas.GetXY(i)
+		if row > 0 {
+			topElementIndex := canvas.GetIndex(col, row-1)
+			topElement = canvas.Elements[topElementIndex].Sample.ID()
+		}
+		e := c.makeElement([2]string{topElement, leftElement})
+		canvas.Elements = append(canvas.Elements, e)
+		leftElement = e.Sample.ID()
 	}
 }
 
@@ -27,9 +37,14 @@ func (c *Shuffle) Seed(seed int64) {
 	rand.Seed(seed)
 }
 
-func (c *Shuffle) makeElement() *models.Element {
+func (c *Shuffle) makeElement(except [2]string) *models.Element {
 	e := &models.Element{}
-	e.Sample = c.samples[rand.Intn(c.samplesCount)]
+	for {
+		e.Sample = c.samples[rand.Intn(c.samplesCount)]
+		if e.Sample.ID() != except[0] && e.Sample.ID() != except[1] {
+			break
+		}
+	}
 	e.Rotation = rand.Intn(4)
 	return e
 }

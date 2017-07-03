@@ -1,5 +1,7 @@
 package models
 
+import "math"
+
 // Canvas descrbes a patchwork that consists of samples and can be rendered
 type Canvas struct {
 	Length   int        // First dimension
@@ -15,4 +17,16 @@ func (c *Canvas) Render(r Renderer) {
 // Compose composes canvas elements out of samples based on particular composition logic
 func (c *Canvas) Compose(cmp Composer, samples []Sample) {
 	cmp.Compose(c, samples)
+}
+
+// GetXY returns element coordinates by its index. Opposite to GetIndex
+func (c *Canvas) GetXY(i int) (int, int) {
+	row := int(math.Floor(float64(i) / float64(c.Width)))
+	col := i - row*c.Width
+	return col, row
+}
+
+// GetIndex returns patch index by its coordinates. Opposite to GetXY
+func (c *Canvas) GetIndex(x, y int) int {
+	return y*c.Width + x
 }
