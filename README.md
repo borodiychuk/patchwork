@@ -6,6 +6,17 @@ This is a tool that generates patchwork quilt pattern out of given square sample
 
 <p align="center" ><img src="https://user-images.githubusercontent.com/1705072/27860688-e5ccdb04-617d-11e7-9778-bec33440710d.png" alt="Patchwork"></p>
 
+## How to run it
+
+Get sure you have Go installed, and then run:
+```
+go get github.com/borodiychuk/patchwork
+```
+After that you can just call it like that:
+```
+patchwork -out patchwork.png -sample s1.png -sample s2.png # ... and so on
+```
+
 ## How is it built
 
 The application ties together concepts of:
