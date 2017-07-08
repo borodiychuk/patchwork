@@ -19,14 +19,14 @@ func (c *Canvas) Compose(cmp Composer, samples []Sample) {
 	cmp.Compose(c, samples)
 }
 
-// GetXY returns element coordinates by its index. Opposite to GetIndex
-func (c *Canvas) GetXY(i int) (int, int) {
+// XY returns element coordinates by its index. Opposite to GetIndex
+func (c *Canvas) XY(i int) (int, int) {
 	row := int(math.Floor(float64(i) / float64(c.Width)))
 	col := i - row*c.Width
 	return col, row
 }
 
-// GetIndex returns patch index by its coordinates. Opposite to GetXY
-func (c *Canvas) GetIndex(x, y int) int {
+// Index returns patch index by its coordinates. Opposite to GetXY
+func (c *Canvas) Index(x, y int) int {
 	return y*c.Width + x
 }

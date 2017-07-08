@@ -21,9 +21,9 @@ func (c *Shuffle) Compose(canvas *models.Canvas, samples []models.Sample) {
 	topElement := ""
 	leftElement := ""
 	for i := 0; i < canvas.Length*canvas.Width; i++ {
-		col, row := canvas.GetXY(i)
+		col, row := canvas.XY(i)
 		if row > 0 {
-			topElementIndex := canvas.GetIndex(col, row-1)
+			topElementIndex := canvas.Index(col, row-1)
 			topElement = canvas.Elements[topElementIndex].Sample.ID()
 		}
 		e := c.makeElement([2]string{topElement, leftElement})

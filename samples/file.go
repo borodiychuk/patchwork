@@ -3,7 +3,6 @@ package samples
 import (
 	"image"
 	"image/png"
-	"log"
 	"os"
 
 	uuid "github.com/satori/go.uuid"
@@ -17,25 +16,24 @@ type File struct {
 
 // Import reads file and sets respective variables
 func (s *File) Import(path string) error {
+	var file *os.File
+	var err error
+
 	s.id = uuid.NewV4().String()
 
-	file, err := os.Open(path)
-	if err != nil {
-		log.Fatal(err)
+	if file, err = os.Open(path); err != nil {
 		return err
 	}
 	defer file.Close()
 
-	s.data, err = png.Decode(file)
-	if err != nil {
-		log.Fatal(err)
+	if s.data, err = png.Decode(file); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-// Image returns a pointer to an image data
+// Image returns image data
 func (s *File) Image() image.Image {
 	return s.data
 }
