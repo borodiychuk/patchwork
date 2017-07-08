@@ -6,7 +6,7 @@ import (
 	"github.com/borodiychuk/patchwork/models"
 )
 
-// Shuffle just picks random sample and turns it by random angle
+// Shuffle just picks random sample and turns it by random angle. Shuffle guarantees that similar elements have no common sides
 type Shuffle struct {
 	samplesCount int
 	samples      []models.Sample

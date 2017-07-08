@@ -11,9 +11,7 @@ import (
 )
 
 // PNG describes renderer that can output PNG data
-type PNG struct {
-	TargetFile string
-}
+type PNG struct{}
 
 // Render renders canvas into a Image file
 func (i *PNG) Render(canvas *models.Canvas) ([]byte, error) {
