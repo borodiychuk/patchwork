@@ -2,9 +2,8 @@ package main
 
 import (
 	"flag"
+	"log"
 	"time"
-
-	"fmt"
 
 	c "github.com/borodiychuk/patchwork/composers"
 	m "github.com/borodiychuk/patchwork/models"
@@ -34,18 +33,17 @@ func main() {
 		sample := &s.File{}
 		err := sample.Import(sampleFiles[i])
 		if err != nil {
-			fmt.Println("! Unable to read file:", sampleFiles[i])
-			return
+			log.Fatalln("! Unable to read file:", sampleFiles[i])
 		}
 		samples = append(samples, sample)
-		fmt.Println("* Using sample file:", sampleFiles[i])
+		log.Println("* Using sample file:", sampleFiles[i])
 	}
 
 	// Prepare canvas composer. This is the one that composes the final look
 	composer := c.Shuffle{}
 	if seed < 1 {
 		seed = time.Now().UTC().Nanosecond()
-		fmt.Println("* Using random seed:", seed)
+		log.Println("* Using random seed:", seed)
 	}
 	composer.Seed(int64(seed))
 

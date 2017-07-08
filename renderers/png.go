@@ -25,7 +25,7 @@ func (i *PNG) Render(canvas *models.Canvas) error {
 	// Iterate over elements
 	for i := 0; i < canvas.Length*canvas.Width; i++ {
 		e := canvas.Elements[i]
-		col, row := canvas.XY(i)
+		col, row := canvas.XYforIndex(i)
 
 		xOffset := col * patchSize
 		yOffset := row * patchSize
