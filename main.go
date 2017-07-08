@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"log"
+	"os"
 	"time"
 
 	c "github.com/borodiychuk/patchwork/composers"
@@ -33,7 +34,7 @@ func main() {
 		sample := &s.File{}
 		err := sample.Import(sampleFiles[i])
 		if err != nil {
-			log.Fatalln("! Unable to read file:", sampleFiles[i])
+			log.Fatalln("! Unable to import from file:", sampleFiles[i])
 		}
 		samples = append(samples, sample)
 		log.Println("* Using sample file:", sampleFiles[i])
@@ -48,15 +49,31 @@ func main() {
 	composer.Seed(int64(seed))
 
 	// Prepare canvas rendered. This is the one that exports calvas into a readable format
-	renderer := r.PNG{
-		TargetFile: output,
-	}
+	renderer := r.PNG{}
 
 	// Generate canvas, copose pattern and render it
 	canvas := m.Canvas{
 		Length: length,
 		Width:  width,
 	}
-	canvas.Compose(&composer, samples)
-	canvas.Render(&renderer)
+	if err := canvas.Compose(&composer, samples); err != nil {
+		log.Fatalln("! Unable to compose pattern:", err)
+	}
+	data, err := canvas.Render(&renderer)
+	if err != nil {
+		log.Fatalln("! Unable to render result:", err)
+	}
+
+	// Dump the rendered image
+	file, err := os.Create(output)
+	if err != nil {
+		log.Fatalln("! Unable to create result file:", err)
+	}
+	defer file.Close()
+
+	if bytes, err := file.Write(data); err != nil {
+		log.Fatalln("! Unable to write to the result file:", err)
+	} else {
+		log.Println("* Created target file with size:", bytes)
+	}
 }

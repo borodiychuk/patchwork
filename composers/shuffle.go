@@ -13,7 +13,7 @@ type Shuffle struct {
 }
 
 // Compose composes a picture out of provided set of samples
-func (c *Shuffle) Compose(canvas *models.Canvas, samples []models.Sample) {
+func (c *Shuffle) Compose(canvas *models.Canvas, samples []models.Sample) error {
 	// Here goes the logic that fills canvas with patches
 	c.samplesCount = len(samples)
 	c.samples = samples
@@ -21,15 +21,22 @@ func (c *Shuffle) Compose(canvas *models.Canvas, samples []models.Sample) {
 	topElement := ""
 	leftElement := ""
 	for i := 0; i < canvas.Length*canvas.Width; i++ {
-		col, row := canvas.XYforIndex(i)
+		col, row, err := canvas.XYforIndex(i)
+		if err != nil {
+			return err
+		}
 		if row > 0 {
-			topElementIndex := canvas.IndexForXY(col, row-1)
+			topElementIndex, err := canvas.IndexForXY(col, row-1)
+			if err != nil {
+				return err
+			}
 			topElement = canvas.Elements[topElementIndex].Sample.ID()
 		}
 		e := c.makeElement([2]string{topElement, leftElement})
 		canvas.Elements = append(canvas.Elements, e)
 		leftElement = e.Sample.ID()
 	}
+	return nil
 }
 
 // Seed seends the ranom number generator

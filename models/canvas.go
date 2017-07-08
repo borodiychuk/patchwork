@@ -24,13 +24,13 @@ type Canvas struct {
 }
 
 // Render renders canvas into some output using particular rendering logic
-func (c *Canvas) Render(r Renderer) {
-	r.Render(c)
+func (c *Canvas) Render(r Renderer) ([]byte, error) {
+	return r.Render(c)
 }
 
 // Compose composes canvas elements out of samples based on particular composition logic
-func (c *Canvas) Compose(cmp Composer, samples []Sample) {
-	cmp.Compose(c, samples)
+func (c *Canvas) Compose(cmp Composer, samples []Sample) error {
+	return cmp.Compose(c, samples)
 }
 
 // XYforIndex returns element coordinates by its index. Opposite to GetIndex
