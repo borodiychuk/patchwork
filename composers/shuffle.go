@@ -3,23 +3,20 @@ package composers
 import (
 	"math/rand"
 
+	"errors"
+
 	"github.com/borodiychuk/patchwork/models"
 )
 
 // Shuffle just picks random sample and turns it by random angle. Shuffle guarantees that similar elements have no common sides
-type Shuffle struct {
-	samplesCount int
-	samples      []models.Sample
-}
+type Shuffle struct{}
 
 // Compose composes a picture out of provided set of samples
 func (c *Shuffle) Compose(canvas *models.Canvas, samples []models.Sample) error {
-	// Here goes the logic that fills canvas with patches
-	c.samplesCount = len(samples)
-	c.samples = samples
-	// Elements to avoid
+	// Elements to exclude from list to avoid similar elements staying together
 	topElement := ""
 	leftElement := ""
+
 	for i := 0; i < canvas.Length*canvas.Width; i++ {
 		col, row, err := canvas.XYforIndex(i)
 		if err != nil {
@@ -32,7 +29,21 @@ func (c *Shuffle) Compose(canvas *models.Canvas, samples []models.Sample) error 
 			}
 			topElement = canvas.Elements[topElementIndex].Sample.ID()
 		}
-		e := c.makeElement([2]string{topElement, leftElement})
+		// This piece of code with cycle is not really optimal and could utilize some caching for better performance. But from other side,
+		// that is not a tool for real-time data processing, so nothing bad happens if it stays so: not so fast
+		// but semantically correct.
+		allowedSamples := []models.Sample{}
+		for _, s := range samples {
+			if s.ID() != topElement && s.ID() != leftElement {
+				allowedSamples = append(allowedSamples, s)
+			}
+		}
+		if len(allowedSamples) == 0 {
+			return errors.New("Too few samples to compose the pattern")
+		}
+		e := &models.Element{}
+		e.Sample = allowedSamples[rand.Intn(len(allowedSamples))]
+		e.Rotation = rand.Intn(4)
 		canvas.Elements = append(canvas.Elements, e)
 		leftElement = e.Sample.ID()
 	}
@@ -42,16 +53,4 @@ func (c *Shuffle) Compose(canvas *models.Canvas, samples []models.Sample) error 
 // Seed seends the ranom number generator
 func (c *Shuffle) Seed(seed int64) {
 	rand.Seed(seed)
-}
-
-func (c *Shuffle) makeElement(except [2]string) *models.Element {
-	e := &models.Element{}
-	for {
-		e.Sample = c.samples[rand.Intn(c.samplesCount)]
-		if e.Sample.ID() != except[0] && e.Sample.ID() != except[1] {
-			break
-		}
-	}
-	e.Rotation = rand.Intn(4)
-	return e
 }
