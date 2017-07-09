@@ -4,7 +4,7 @@
 
 This is a tool that generates patchwork quilt pattern out of given square samples.
 
-<p align="center" ><img src="https://user-images.githubusercontent.com/1705072/27860688-e5ccdb04-617d-11e7-9778-bec33440710d.png" alt="Patchwork"></p>
+<p align="center" ><img src="https://user-images.githubusercontent.com/1705072/27992353-02a562f6-6493-11e7-8e57-b6b976c97f5a.png" alt="Patchwork output example with shuffle composer"> <img src="https://user-images.githubusercontent.com/1705072/27992352-02a2d824-6493-11e7-9b61-21f36a0b6cba.png" alt="Patchwork output example with crosses composer"></p>
 
 ## How to run it
 
