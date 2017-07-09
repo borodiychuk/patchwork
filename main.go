@@ -17,11 +17,12 @@ func main() {
 	// Define flags and parse them
 	var length, width int
 	var seed int
-	var output string
+	var output, composerType string
 	var sampleFiles support.StringParamsSet
 	flag.IntVar(&length, "dim-l", 15, "Patches count per length dimension")
 	flag.IntVar(&width, "dim-w", 12, "Patches count per widht dimension")
 	flag.StringVar(&output, "out", "patchwork.png", "Path to output file")
+	flag.StringVar(&composerType, "composer", "shuffle", "Pattern composer shuffle|crosses")
 	flag.IntVar(&seed, "seed", 0, "Random seed to regenerate particular pattern. 0 or negative means seeding randomly")
 	flag.Var(&sampleFiles, "sample", "Path to sample file. There can be multiple parameters of this type")
 	flag.Parse()
@@ -41,7 +42,16 @@ func main() {
 	}
 
 	// Prepare canvas composer. This is the one that composes the final look
-	composer := c.Shuffle{}
+	var composer m.Composer
+	switch composerType {
+	case "shuffle":
+		composer = &c.Shuffle{}
+	case "crosses":
+		composer = &c.Crosses{}
+	default:
+		log.Fatalln("! Unknown composer:", composerType)
+	}
+	log.Println("* Using composer:", composerType)
 	if seed < 1 {
 		seed = time.Now().UTC().Nanosecond()
 		log.Println("* Using random seed:", seed)
@@ -56,7 +66,7 @@ func main() {
 		Length: length,
 		Width:  width,
 	}
-	if err := canvas.Compose(&composer, samples); err != nil {
+	if err := canvas.Compose(composer, samples); err != nil {
 		log.Fatalln("! Unable to compose pattern:", err)
 	}
 	data, err := canvas.Render(&renderer)

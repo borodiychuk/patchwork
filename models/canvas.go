@@ -25,6 +25,14 @@ type Canvas struct {
 
 // Render renders canvas into some output using particular rendering logic
 func (c *Canvas) Render(r Renderer) ([]byte, error) {
+	if len(c.Elements) == 0 {
+		return nil, errors.New("No canvas elements defined. Have you called the composer first?")
+	}
+	for _, e := range c.Elements {
+		if e == nil {
+			return nil, errors.New("Some canvas elements were not defined. Have you called the composer first?")
+		}
+	}
 	return r.Render(c)
 }
 
