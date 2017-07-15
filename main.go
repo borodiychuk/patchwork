@@ -2,8 +2,11 @@ package main
 
 import (
 	"flag"
+	"image/color"
 	"log"
 	"os"
+	"strconv"
+	"strings"
 	"time"
 
 	c "github.com/borodiychuk/patchwork/composers"
@@ -19,26 +22,49 @@ func main() {
 	var seed int
 	var output, composerType string
 	var sampleFiles support.StringParamsSet
+	var sampleColors support.StringParamsSet
 	flag.IntVar(&length, "dim-l", 15, "Patches count per length dimension")
 	flag.IntVar(&width, "dim-w", 12, "Patches count per widht dimension")
 	flag.StringVar(&output, "out", "patchwork.png", "Path to output file")
 	flag.StringVar(&composerType, "composer", "shuffle", "Pattern composer shuffle|crosses")
 	flag.IntVar(&seed, "seed", 0, "Random seed to regenerate particular pattern. 0 or negative means seeding randomly")
-	flag.Var(&sampleFiles, "sample", "Path to sample file. There can be multiple parameters of this type")
+	flag.Var(&sampleFiles, "sample-file", "Path to sample file. There can be multiple parameters of this type")
+	flag.Var(&sampleColors, "sample-color", `Sample color definition in format of 3 ints 0-255 concatenated with comma, like  "0,1,255"`)
 	flag.Parse()
 
-	// TODO: Validate flags
-
-	// Process samples
 	samples := []m.Sample{}
-	for i := 0; i < len(sampleFiles); i++ {
+
+	// Process sample files
+	for _, f := range sampleFiles {
 		sample := &s.File{}
-		err := sample.Import(sampleFiles[i])
+		err := sample.Import(f)
 		if err != nil {
-			log.Fatalln("! Unable to import from file:", sampleFiles[i])
+			log.Fatalln("! Unable to import from file:", f)
 		}
 		samples = append(samples, sample)
-		log.Println("* Using sample file:", sampleFiles[i])
+		log.Println("* Using sample file:", f)
+	}
+
+	// Process color-defined sample
+	for _, c := range sampleColors {
+		colors := strings.Split(c, ",")
+		if len(colors) < 3 {
+			log.Fatalln("! Wrong color definition:", c)
+		}
+		colorsInt := [3]uint8{}
+		for i := 0; i < 3; i++ {
+			// Base set to 9 in order to represent an extra bit given by uint8
+			c, err := strconv.ParseInt(colors[i], 10, 9)
+			if err != nil {
+				log.Fatalln("! Can not parse color component:", colors[i])
+			}
+			colorsInt[i] = uint8(c)
+		}
+		sample := &s.Color{
+			Color: color.RGBA{colorsInt[0], colorsInt[1], colorsInt[2], 255},
+		}
+		samples = append(samples, sample)
+		log.Println("* Using sample color:", sample.ID())
 	}
 
 	// Prepare canvas composer. This is the one that composes the final look

@@ -14,7 +14,7 @@ go get github.com/borodiychuk/patchwork
 ```
 After that you can just call it like that:
 ```
-patchwork -out patchwork.png -sample s1.png -sample s2.png # ... and so on
+patchwork -out patchwork.png -sample-file s1.png -sample-file s2.png -sample-color 255,0,127 -sample-color 127,127,255 # ... and so on
 ```
 
 ## How is it built
