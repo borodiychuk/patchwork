@@ -18,8 +18,10 @@ type File struct {
 func (s *File) Import(path string) error {
 	var file *os.File
 	var err error
+	u, err := uuid.NewV4()
 
-	s.id = uuid.NewV4().String()
+	//s.id = uuid.NewV4().String()
+	s.id = u.String()
 
 	if file, err = os.Open(path); err != nil {
 		return err
